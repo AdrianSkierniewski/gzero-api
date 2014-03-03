@@ -24,7 +24,7 @@ class ServiceProvider extends SP {
      */
     public function boot()
     {
-
+        $this->registerRoutes();
     }
 
     /**
