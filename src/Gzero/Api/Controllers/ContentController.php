@@ -31,8 +31,7 @@ class ContentController extends Controller {
      */
     public function index()
     {
-        $list = $this->contentRepo->listBy()->get();
-        return $this->contentRepo->loadTranslations($list);
+        return $this->contentRepo->listBy()->get();
     }
 
     /**
