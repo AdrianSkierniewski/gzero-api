@@ -1,7 +1,6 @@
 <?php namespace Gzero\Api\Controllers;
 
 use Gzero\Repositories\Block\BlockRepository;
-use Illuminate\Routing\Controller;
 
 /**
  * This file is part of the GZERO CMS package.
@@ -15,7 +14,7 @@ use Illuminate\Routing\Controller;
  * @author     Adrian Skierniewski <adrian.skierniewski@gmail.com>
  * @copyright  Copyright (c) 2014, Adrian Skierniewski
  */
-class BlockController extends Controller {
+class BlockController extends BaseController {
 
     protected $blockRepo;
 
