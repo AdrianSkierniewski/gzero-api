@@ -3,8 +3,9 @@
 Route::group(
     array('prefix' => 'api/v1', 'before' => 'auth|admin'),
     function () {
-        Route::resource('block', 'Gzero\Api\Controllers\BlockController');
-        Route::resource('content', 'Gzero\Api\Controllers\ContentController');
-        Route::resource('content.uploads', 'Gzero\Api\Controllers\UploadController');
+        Route::resource('blocks', 'Gzero\Api\Controllers\BlockController');
+        Route::resource('contents', 'Gzero\Api\Controllers\ContentController');
+        Route::resource('contents.uploads', 'Gzero\Api\Controllers\UploadController');
+        Route::resource('uploads', 'Gzero\Api\Controllers\UploadController');
     }
 );

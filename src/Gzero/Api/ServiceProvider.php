@@ -1,6 +1,6 @@
 <?php namespace Gzero\Api;
 
-use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Input;
 use Illuminate\Support\ServiceProvider as SP;
 
 /**
@@ -34,7 +34,12 @@ class ServiceProvider extends SP {
      */
     public function register()
     {
-        // TODO: Implement register() method.
+        $this->app->bind(
+            'Gzero\Api\UrlParamsProcessor',
+            function ($app) {
+                return new UrlParamsProcessor(Input::all());
+            }
+        );
     }
 
     private function registerRoutes()

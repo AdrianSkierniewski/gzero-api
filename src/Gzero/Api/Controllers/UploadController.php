@@ -1,5 +1,6 @@
 <?php namespace Gzero\Api\Controllers;
 
+use Gzero\Api\UrlParamsProcessor;
 use Gzero\Repositories\Upload\UploadRepository;
 use Illuminate\Support\Facades\Response;
 
@@ -17,11 +18,14 @@ use Illuminate\Support\Facades\Response;
  */
 class UploadController extends BaseController {
 
-    protected $uploadRepo;
+    protected
+        $uploadRepo,
+        $processor;
 
-    public function __construct(UploadRepository $upload)
+    public function __construct(UploadRepository $upload, UrlParamsProcessor $processor)
     {
         $this->uploadRepo = $upload;
+        $this->processor  = $processor;
     }
 
     /**
@@ -33,17 +37,19 @@ class UploadController extends BaseController {
      */
     public function index($id = NULL)
     {
+        $page    = $this->processor->getPage();
+        $orderBy = $this->processor->getOrderByParams();
         if ($id) {
-            Response::json(
+            return Response::json(
                 [
-                    'data'  => $this->uploadRepo->onlyVisible()->getByContent($id)->toArray(),
+                    'data'  => $this->uploadRepo->getByContent($id, $page, $orderBy)->toArray(),
                     'total' => $this->uploadRepo->getLastTotal()
                 ]
             );
         }
         return Response::json(
             [
-                'data'  => $this->uploadRepo->get()->toArray(),
+                'data'  => $this->uploadRepo->get($page, $orderBy)->toArray(),
                 'total' => $this->uploadRepo->getLastTotal()
             ]
         );
