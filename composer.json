@@ -14,7 +14,8 @@
         "illuminate/support": "4.1.*"
     },
     "require-dev": {
-        "gzero/gzero-cms": "dev-master"
+        "gzero/gzero-cms": "dev-master",
+        "satooshi/php-coveralls": "dev-master"
     },
     "autoload": {
         "classmap": [
