@@ -1,5 +1,6 @@
 <?php namespace Gzero\Api\Controllers;
 
+use Gzero\Api\UrlParamsProcessor;
 use Gzero\Repositories\Content\ContentRepository;
 
 /**
@@ -16,11 +17,14 @@ use Gzero\Repositories\Content\ContentRepository;
  */
 class ContentController extends BaseController {
 
-    protected $contentRepo;
+    protected
+        $processor,
+        $contentRepo;
 
-    public function __construct(ContentRepository $content)
+    public function __construct(ContentRepository $content, UrlParamsProcessor $processor)
     {
         $this->contentRepo = $content;
+        $this->processor   = $processor;
     }
 
     /**
@@ -30,7 +34,9 @@ class ContentController extends BaseController {
      */
     public function index()
     {
-        return $this->contentRepo->onlyPublic()->get();
+        $orderBy = $this->processor->getOrderByParams();
+        $page    = $this->processor->getPage();
+        return $this->contentRepo->onlyPublic()->get($page, $orderBy);
     }
 
     /**
