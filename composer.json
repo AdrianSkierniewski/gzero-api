@@ -13,10 +13,6 @@
         "php": ">=5.4.0",
         "illuminate/support": "4.1.*"
     },
-    "require-dev": {
-        "gzero/gzero-cms": "dev-master",
-        "satooshi/php-coveralls": "dev-master"
-    },
     "autoload": {
         "classmap": [
         ],
