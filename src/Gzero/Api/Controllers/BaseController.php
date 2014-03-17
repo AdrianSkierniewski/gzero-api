@@ -15,5 +15,12 @@ use Illuminate\Routing\Controller;
  * @copyright  Copyright (c) 2014, Adrian Skierniewski
  */
 class BaseController extends Controller {
-
+    /**
+     * @apiDefinePermission visibility Visibility access rights needed.
+     * These permissions allow you to view inactive contents
+     */
+    /**
+     * @apiDefinePermission user User access rights needed.
+     * Optionally you can write here further informations about the permission.
+     */
 }

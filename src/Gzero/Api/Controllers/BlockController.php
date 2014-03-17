@@ -1,5 +1,6 @@
 <?php namespace Gzero\Api\Controllers;
 
+use Gzero\Api\UrlParamsProcessor;
 use Gzero\Repositories\Block\BlockRepository;
 
 /**
@@ -16,21 +17,33 @@ use Gzero\Repositories\Block\BlockRepository;
  */
 class BlockController extends BaseController {
 
-    protected $blockRepo;
+    protected
+        $processor,
+        $blockRepo;
 
-    public function __construct(BlockRepository $block)
+    public function __construct(BlockRepository $block, UrlParamsProcessor $processor)
     {
         $this->blockRepo = $block;
+        $this->processor = $processor;
     }
 
     /**
      * Display a listing of the resource.
      *
+     * @api        {get} /bocks Get blocks list
+     * @apiVersion 0.1.0
+     * @apiName    GetBlockList
+     * @apiGroup   Block
+     * @apiExample Example usage:
+     * curl -i http://localhost/api/v1/contents
+     * @apiSuccess {Array} data List of blocks (Array of Objects)
+     * @apiSuccess {Number} total Total count of all elements
+     *
      * @return Response
      */
     public function index()
     {
-        return $this->blockRepo->listBy()->get();
+        return $this->blockRepo->get($this->processor->getPage(), $this->processor->getOrderByParams());
     }
 
     /**
@@ -54,7 +67,16 @@ class BlockController extends BaseController {
     }
 
     /**
-     * Display the specified resource.
+     * Display a listing of the resource.
+     *
+     * @api        {get} /blocks/:id Get single block
+     * @apiVersion 0.1.0
+     * @apiName    GetBlock
+     * @apiGroup   Block
+     *
+     * @apiParam {Number} id Content unique ID.
+     *
+     * @apiSuccess {Object[]} translations List of translations (Array of Objects).
      *
      * @param  int $id
      *
