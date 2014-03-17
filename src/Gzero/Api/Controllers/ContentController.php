@@ -2,6 +2,7 @@
 
 use Gzero\Api\UrlParamsProcessor;
 use Gzero\Repositories\Content\ContentRepository;
+use Illuminate\Support\Facades\Response;
 
 /**
  * This file is part of the GZERO CMS package.
@@ -30,13 +31,30 @@ class ContentController extends BaseController {
     /**
      * Display a listing of the resource.
      *
-     * @return Response
+     * @param null $id
+     *
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index($id = NULL)
     {
         $orderBy = $this->processor->getOrderByParams();
         $page    = $this->processor->getPage();
-        return $this->contentRepo->onlyPublic()->get($page, $orderBy);
+        if ($id) {
+            $content = $this->contentRepo->getById($id);
+            if (!empty($content)) {
+                return Response::json(
+                    [
+                        'data'  => $this->contentRepo->getChildren($content, $page, $orderBy)->toArray(),
+                        'total' => $this->contentRepo->getLastTotal()
+                    ]
+                );
+            }
+        }
+        return Response::json(
+            [
+                'data' => $this->contentRepo->getRoots($orderBy)->toArray(),
+            ]
+        );
     }
 
     /**
