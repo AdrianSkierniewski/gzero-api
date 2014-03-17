@@ -1,7 +1,8 @@
 <?php namespace Gzero\Api\Controllers;
 
 use Gzero\Api\UrlParamsProcessor;
-use Gzero\Repositories\Block\BlockRepository;
+use Gzero\Repositories\User\UserRepository;
+use Illuminate\Support\Facades\Response;
 
 /**
  * This file is part of the GZERO CMS package.
@@ -9,40 +10,47 @@ use Gzero\Repositories\Block\BlockRepository;
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Class BlockController
+ * Class UserController
  *
  * @package    Gzero\Admin\Controllers\Resource
  * @author     Adrian Skierniewski <adrian.skierniewski@gmail.com>
  * @copyright  Copyright (c) 2014, Adrian Skierniewski
  */
-class BlockController extends BaseController {
+class UserController extends BaseController {
 
     protected
-        $processor,
-        $blockRepo;
+        $userRepo,
+        $processor;
 
-    public function __construct(BlockRepository $block, UrlParamsProcessor $processor)
+    public function __construct(UserRepository $upload, UrlParamsProcessor $processor)
     {
-        $this->blockRepo = $block;
+        $this->userRepo  = $upload;
         $this->processor = $processor;
     }
 
     /**
      * Display a listing of the resource.
      *
-     * @api        {get} /bocks Get blocks list
-     * @apiVersion 0.1.0
-     * @apiName    GetBlockList
-     * @apiGroup   Block
-     * @apiExample Example usage:
-     * curl -i http://localhost/api/v1/contents
-     * @apiSuccess {Array} data List of blocks (Array of Objects)
-     * @apiSuccess {Number} total Total count of all elements
-     * @return Response
+     * @api           {get} /users Get users list
+     * @apiVersion    0.1.0
+     * @apiName       GetUserList
+     * @apiGroup      User
+     * @apiExample    Example usage:
+     * curl -i http://localhost/api/v1/users
+     * @apiSuccess {Array} data List of users (Array of Objects)
+     * @apiPermission admin
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index()
     {
-        return $this->blockRepo->get($this->processor->getPage(), $this->processor->getOrderByParams());
+        $page    = $this->processor->getPage();
+        $orderBy = $this->processor->getOrderByParams();
+        return Response::json(
+            [
+                'data'  => $this->userRepo->get($page, $orderBy)->toArray(),
+                'total' => $this->userRepo->getLastTotal()
+            ]
+        );
     }
 
     /**
@@ -66,16 +74,7 @@ class BlockController extends BaseController {
     }
 
     /**
-     * Display a listing of the resource.
-     *
-     * @api        {get} /blocks/:id Get single block
-     * @apiVersion 0.1.0
-     * @apiName    GetBlock
-     * @apiGroup   Block
-     *
-     * @apiParam {Number} id Content unique ID.
-     *
-     * @apiSuccess {Object[]} translations List of translations (Array of Objects).
+     * Display the specified resource.
      *
      * @param  int $id
      *
@@ -83,7 +82,7 @@ class BlockController extends BaseController {
      */
     public function show($id)
     {
-        return $this->blockRepo->getById($id);
+        return $this->userRepo->getById($id);
     }
 
     /**

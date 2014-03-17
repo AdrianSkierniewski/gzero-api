@@ -16,7 +16,7 @@ use Illuminate\Routing\Controller;
  */
 class BaseController extends Controller {
     /**
-     * @apiDefinePermission visibility Visibility access rights needed.
+     * @apiDefinePermission admin Admin access rights needed.
      * These permissions allow you to view inactive contents
      */
     /**

@@ -12,9 +12,6 @@
     "require": {
         "php": ">=5.4.0"
     },
-    "require-dev": {
-        "gzero/gzero-cms": "dev-master"
-    },
     "autoload": {
         "classmap": [
         ],
