@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Response;
  * @author     Adrian Skierniewski <adrian.skierniewski@gmail.com>
  * @copyright  Copyright (c) 2014, Adrian Skierniewski
  */
-class UploadController extends BaseController {
+class UploadController extends ApiController {
 
     protected
         $uploadRepo,

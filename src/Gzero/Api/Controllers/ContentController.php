@@ -2,7 +2,6 @@
 
 use Gzero\Api\UrlParamsProcessor;
 use Gzero\Repositories\Content\ContentRepository;
-use Illuminate\Support\Facades\Response;
 
 /**
  * This file is part of the GZERO CMS package.
@@ -16,7 +15,7 @@ use Illuminate\Support\Facades\Response;
  * @author     Adrian Skierniewski <adrian.skierniewski@gmail.com>
  * @copyright  Copyright (c) 2014, Adrian Skierniewski
  */
-class ContentController extends BaseController {
+class ContentController extends ApiController {
 
     protected
         $processor,
@@ -27,31 +26,6 @@ class ContentController extends BaseController {
         $this->contentRepo = $content;
         $this->processor   = $processor;
     }
-
-    /**
-     * @apiDefineSuccessStructure Content
-     * @apiSuccess {Number} id Content id
-     * @apiSuccess {Number} rating Content rating
-     * @apiSuccess {Number} visits Content visit counter
-     * @apiSuccess {Object[]} translations List of translations (Array of Objects)
-     * @apiSuccess {Number} translations.lang_id Language id
-     * @apiSuccess {String} translations.url Translation url
-     * @apiSuccess {String} translations.title Title
-     * @apiSuccess {String} translations.body Body
-     * @apiSuccess {String} translations.seo_title SEO title
-     * @apiSuccess {String} translations.seo_description SEO description
-     * @apiSuccess {Boolean} translations.is_active Is translation active
-     * @apiSuccess {Date} translations.created_at Creation date of translation
-     * @apiSuccess {Date} translations.updated_at Update date of translation
-     * @apiSuccess {Boolean} is_on_home Home page flag
-     * @apiSuccess {Boolean} is_comment_allowed Is comment allowed flag
-     * @apiSuccess {Boolean} is_promoted Is promoted flag
-     * @apiSuccess {Boolean} is_sticky Is sticky flag
-     * @apiSuccess {Boolean} is_active Is content active flag
-     * @apiSuccess {Date} published_at Date of publication
-     * @apiSuccess {Date} created_at Creation date
-     * @apiSuccess {Date} updated_at Update date
-     */
 
     /**
      * @api            {get} /contents/:id/children Get content list of children
@@ -65,6 +39,7 @@ class ContentController extends BaseController {
      * @apiSuccess {Array} data List of contents (Array of Objects)
      * @apiSuccess {Number} total Total count of all elements
      */
+
     /**
      * Display a listing of the resource.
      *
@@ -83,19 +58,23 @@ class ContentController extends BaseController {
     public function index($id = NULL)
     {
         $orderBy = $this->processor->getOrderByParams();
-        if ($id) {
+        if ($id) { // content/n/children
             $content = $this->contentRepo->getById($id);
             $page    = $this->processor->getPage();
             if (!empty($content)) {
-                return Response::json(
-                    [
-                        'data'  => $this->contentRepo->getChildren($content, $page, $orderBy)->toArray(),
-                        'total' => $this->contentRepo->getLastTotal()
-                    ]
-                );
+                return
+                    $this->respondWithSuccess(
+                        [
+                            'data'  => $this->contentRepo->getChildren($content, $page, $orderBy)->toArray(),
+                            'total' => $this->contentRepo->getLastTotal()
+                        ]
+                    );
+            } else {
+                return $this->respondNotFound();
             }
         }
-        return Response::json(
+        // @TODO We need to return tree structure?
+        return $this->respondWithSuccess(
             [
                 'data' => $this->contentRepo->getRoots($orderBy)->toArray(),
             ]
@@ -143,7 +122,11 @@ class ContentController extends BaseController {
      */
     public function show($id)
     {
-        return $this->contentRepo->getById($id);
+        $content = $this->contentRepo->getById($id);
+        if ($content) {
+            return $this->respondWithSuccess($content->toArray());
+        }
+        return $this->respondNotFound();
     }
 
     /**
@@ -181,4 +164,29 @@ class ContentController extends BaseController {
     {
         //
     }
-} 
+}
+
+/**
+ * @apiDefineSuccessStructure Content
+ * @apiSuccess {Number} id Content id
+ * @apiSuccess {Number} rating Content rating
+ * @apiSuccess {Number} visits Content visit counter
+ * @apiSuccess {Object[]} translations List of translations (Array of Objects)
+ * @apiSuccess {Number} translations.lang_id Language id
+ * @apiSuccess {String} translations.url Translation url
+ * @apiSuccess {String} translations.title Title
+ * @apiSuccess {String} translations.body Body
+ * @apiSuccess {String} translations.seo_title SEO title
+ * @apiSuccess {String} translations.seo_description SEO description
+ * @apiSuccess {Boolean} translations.is_active Is translation active
+ * @apiSuccess {Date} translations.created_at Creation date of translation
+ * @apiSuccess {Date} translations.updated_at Update date of translation
+ * @apiSuccess {Boolean} is_on_home Home page flag
+ * @apiSuccess {Boolean} is_comment_allowed Is comment allowed flag
+ * @apiSuccess {Boolean} is_promoted Is promoted flag
+ * @apiSuccess {Boolean} is_sticky Is sticky flag
+ * @apiSuccess {Boolean} is_active Is content active flag
+ * @apiSuccess {Date} published_at Date of publication
+ * @apiSuccess {Date} created_at Creation date
+ * @apiSuccess {Date} updated_at Update date
+ */

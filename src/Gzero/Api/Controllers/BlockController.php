@@ -15,7 +15,7 @@ use Gzero\Repositories\Block\BlockRepository;
  * @author     Adrian Skierniewski <adrian.skierniewski@gmail.com>
  * @copyright  Copyright (c) 2014, Adrian Skierniewski
  */
-class BlockController extends BaseController {
+class BlockController extends ApiController {
 
     protected
         $processor,
