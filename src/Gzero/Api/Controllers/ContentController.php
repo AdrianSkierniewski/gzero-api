@@ -76,7 +76,7 @@ class ContentController extends ApiController {
         // @TODO We need to return tree structure?
         return $this->respondWithSuccess(
             [
-                'data' => $this->contentRepo->getRoots($orderBy)->toArray(),
+                'data' => $this->contentRepo->getCategoriesTree($orderBy)->toArray(),
             ]
         );
     }
